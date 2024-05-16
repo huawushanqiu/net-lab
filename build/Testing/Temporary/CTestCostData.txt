@@ -5,3 +5,4 @@ ip_test 0 0
 ip_frag_test 0 0
 icmp_test 0 0
 ---
+arp_test
