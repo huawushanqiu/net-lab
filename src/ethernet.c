@@ -6,6 +6,7 @@
 #include "driver.h"
 #include "arp.h"
 #include "ip.h"
+#include <stdint.h>
 /**
  * @brief 处理一个收到的数据包
  * 
@@ -13,7 +14,14 @@
  */
 void ethernet_in(buf_t *buf)
 {
-
+  if(buf->len < sizeof(ether_hdr_t)){
+    return;
+  }
+  ether_hdr_t *hdr = (ether_hdr_t *)buf->data;
+  uint16_t protocol = swap16(hdr->protocol16);
+  uint8_t *src = hdr->src;
+  buf_remove_header(buf, sizeof(ether_hdr_t));
+  net_in(buf,protocol,src);
 }
 /**
  * @brief 处理一个要发送的数据包
@@ -31,7 +39,7 @@ void ethernet_out(buf_t *buf, const uint8_t *mac, net_protocol_t protocol)
   ether_hdr_t *hdr = (ether_hdr_t *)buf->data;
   memcpy(hdr->src,net_if_mac,NET_MAC_LEN);
   memcpy(hdr->dst,mac,NET_MAC_LEN);
-  hdr->protocol16 = protocol;
+  hdr->protocol16 = swap16((uint16_t)protocol);
   driver_send(buf);
 }
 /**

@@ -45,6 +45,9 @@ CMakeFiles/icmp_test.dir/src/ethernet.c.o: \
  /usr/include/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/bits/stdlib-float.h \
  /home/qzh/homework/cnlab/net-lab/./include/buf.h \
+ /home/qzh/homework/cnlab/net-lab/./include/buf.h \
+ /home/qzh/homework/cnlab/net-lab/./include/config.h \
+ /home/qzh/homework/cnlab/net-lab/./include/net.h \
  /home/qzh/homework/cnlab/net-lab/./include/utils.h \
  /home/qzh/homework/cnlab/net-lab/./include/driver.h \
  /home/qzh/homework/cnlab/net-lab/./include/arp.h \
