@@ -130,7 +130,16 @@ void arp_in(buf_t *buf, uint8_t *src_mac)
     }else{
       //接收包为ARP_REQUEST
       //注意这里也要进行一次填表,无论是request还是reply都需要填表
-      //这里由于自己的if-else逻辑判断和指导书的逻辑不太一样，所以最初忘记填表了，引以为戒！！！
+      //这里由于自己最初的理解并不清楚，所以也忘记了填表，不过现在发现自己对arp的理解还是太浅
+      //arp_out和arp_in处理的数据包是不同的，arp是地址解析，arp_out就是查表找地址的，
+      //而arp_in则是填表补充地址的，arp_out找不到地址就会发送请求，arp_in则在填写请求方地址
+      //的同时，发送自己的地址，而这个地址又会被请求方的arp_in拿去填表，由此不断建立地址映射
+      //所以可以发现，arp_out会接收arp数据包和ip数据包，而arp_in只会接收arp数据包，
+      //所以用if-else逻辑判断来写才是清楚的，指导书的写法有些模糊。
+      //同时要注意，arp_out负责缓存ip数据包，而arp_in则负责发送缓存的ip数据包。
+      //为什么不让arp_out发送缓存的数据呢？因为从之前的请求过程可以发现，接收ARP_REPLY的是
+      //请求方的arp_in，在接收的同时就可以将之前缓存的数据发出，不用多此一举，而且arp_out也
+      //无法处理缓存的数据包，因为它不知道地址何时更新。
       map_set(&arp_table, arp_hdr->sender_ip, arp_hdr->sender_mac);
       //注意memcmp相等返回值为0
       if(!memcmp(arp_hdr->target_ip, net_if_ip, NET_IP_LEN)){

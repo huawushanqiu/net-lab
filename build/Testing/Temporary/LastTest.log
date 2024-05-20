@@ -1,10 +1,10 @@
-Start testing: May 20 23:00 CST
+Start testing: May 20 23:33 CST
 ----------------------------------------------------------
 3/6 Testing: arp_test
 3/6 Test: arp_test
 Command: "/home/qzh/homework/cnlab/net-lab/build/arp_test" "/home/qzh/homework/cnlab/net-lab/testing/data/arp_test"
 Directory: /home/qzh/homework/cnlab/net-lab/build
-"arp_test" start time: May 20 23:00 CST
+"arp_test" start time: May 20 23:33 CST
 Output:
 ----------------------------------------------------------
 [0;34mTest begin.
@@ -45,8 +45,8 @@ Sample input all processed, checking output
 Test time =   0.02 sec
 ----------------------------------------------------------
 Test Passed.
-"arp_test" end time: May 20 23:00 CST
+"arp_test" end time: May 20 23:33 CST
 "arp_test" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: May 20 23:00 CST
+End testing: May 20 23:33 CST
