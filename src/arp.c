@@ -63,15 +63,17 @@ void arp_req(uint8_t *target_ip)
 {
   //初始化arp_pkt
   arp_pkt_t arp_pkt = arp_init_pkt;
-  buf_init(&txbuf,ETHERNET_MIN_TRANSPORT_UNIT);
+  buf_init(&txbuf,sizeof(arp_pkt_t));
   arp_pkt.opcode16 = swap16(ARP_REQUEST);
-  memcpy(arp_pkt.target_mac, ether_broadcast_mac, NET_MAC_LEN); 
+  //注意下面这一行,arp_req的报文默认mac地址为全0,不需要更改target_mac！！！
+  //不要和以太网帧的mac地址搞混了！！！
+  //memcpy(arp_pkt.target_mac, ether_broadcast_mac, NET_MAC_LEN); 
   //下面看错了，最开始写的net_if_mac，引以为戒
   memcpy(arp_pkt.target_ip, target_ip, NET_IP_LEN);
   //初始化完成之后一并复制给txbuf
   arp_pkt_t *arp_hdr = (arp_pkt_t *)txbuf.data;
   memcpy(arp_hdr, &arp_pkt, sizeof(arp_pkt_t));
-  ethernet_out(&txbuf, arp_hdr->target_mac, NET_PROTOCOL_ARP);
+  ethernet_out(&txbuf, ether_broadcast_mac, NET_PROTOCOL_ARP);
 }
 
 /**
@@ -83,7 +85,7 @@ void arp_req(uint8_t *target_ip)
 void arp_resp(uint8_t *target_ip, uint8_t *target_mac)
 {
   arp_pkt_t arp_pkt = arp_init_pkt;
-  buf_init(&txbuf, ETHERNET_MIN_TRANSPORT_UNIT);
+  buf_init(&txbuf, sizeof(arp_pkt_t));
   arp_pkt.opcode16 = swap16(ARP_REPLY);
   memcpy(arp_pkt.target_ip, target_ip, NET_IP_LEN);
   memcpy(arp_pkt.target_mac, target_mac, NET_MAC_LEN);
@@ -105,24 +107,31 @@ void arp_in(buf_t *buf, uint8_t *src_mac)
     return;
   }else{
     arp_pkt_t *arp_hdr = (arp_pkt_t *)buf->data;
-    if((arp_hdr->hw_type16 != ARP_HW_ETHER)
-      || (arp_hdr->pro_type16 != NET_PROTOCOL_IP)
+    //注意下面几个swap16,之前写到这全忘了，引以为戒！！！
+    if((arp_hdr->hw_type16 != swap16(ARP_HW_ETHER))
+      || (arp_hdr->pro_type16 != swap16(NET_PROTOCOL_IP))
       || (arp_hdr->hw_len != NET_MAC_LEN)
       || (arp_hdr->pro_len != NET_IP_LEN)
-      || ((arp_hdr->opcode16 != ARP_REQUEST) && (arp_hdr->opcode16 != ARP_REPLY)))
+      || ((arp_hdr->opcode16 != swap16(ARP_REQUEST)) && (arp_hdr->opcode16 != swap16(ARP_REPLY))))
     {
       return;
       //下面看错了，最开始写的pro_type16，引以为戒
-    }else if(arp_hdr->opcode16 == ARP_REPLY){
+    }else if(arp_hdr->opcode16 == swap16(ARP_REPLY)){
       //接受包为ARP_REPLY
       map_set(&arp_table, arp_hdr->sender_ip, arp_hdr->sender_mac);
       if(map_get(&arp_buf, arp_hdr->sender_ip)){
+        //之前有没发出去的包
         buf_t *ip_buf = (buf_t *)map_get(&arp_buf, arp_hdr->sender_ip);
-        ethernet_out(ip_buf, arp_hdr->sender_mac, NET_PROTOCOL_ARP);
+        //注意下面的NET_PROTOCOL_IP，这里是把之前没发出去的IP数据包发出去，所以不是ARP协议
+        //ARP协议只有两类数据包，一类是ARP_REQUEST，一类是ARP_REPLY
+        ethernet_out(ip_buf, arp_hdr->sender_mac, NET_PROTOCOL_IP);
         map_delete(&arp_buf, arp_hdr->sender_ip);
       }
     }else{
       //接收包为ARP_REQUEST
+      //注意这里也要进行一次填表,无论是request还是reply都需要填表
+      //这里由于自己的if-else逻辑判断和指导书的逻辑不太一样，所以最初忘记填表了，引以为戒！！！
+      map_set(&arp_table, arp_hdr->sender_ip, arp_hdr->sender_mac);
       //注意memcmp相等返回值为0
       if(!memcmp(arp_hdr->target_ip, net_if_ip, NET_IP_LEN)){
         arp_resp(arp_hdr->sender_ip, arp_hdr->sender_mac);
@@ -143,7 +152,8 @@ void arp_out(buf_t *buf, uint8_t *ip)
   uint8_t target_mac[NET_MAC_LEN];
   if(map_get(&arp_table, ip)){
     memcpy(target_mac, (uint8_t *)map_get(&arp_table, ip), NET_MAC_LEN);
-    ethernet_out(buf, target_mac, NET_PROTOCOL_ARP);
+    //这里也和上面是同样的道理
+    ethernet_out(buf, target_mac, NET_PROTOCOL_IP);
   }else if(map_get(&arp_buf, ip)){
     //说明正在等待该ip回应arp请求
     ;
