@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 /**
@@ -74,5 +75,29 @@ uint8_t ip_prefix_match(uint8_t *ipa, uint8_t *ipb)
  */
 uint16_t checksum16(uint16_t *data, size_t len)
 {
-    // TO-DO
+  //指导书上说最后可能剩下8bit,但是首部长度应该是以32bit为单位，不明白为什么会有这种情况
+  //按照我的理解长度肯定是16bit的倍数
+  //最终还是决定修改为以字节为单位，这样函数更通用
+  uint32_t sum = 0;
+  //for循环还是以16bit为单位
+  for(int i = 0; i < len / 2; i++){
+    sum += *data;
+    data++;
+  }
+  //最后判断len是否剩下8bit
+  if(len % 2 == 1){
+    sum += *(uint8_t *)data;
+  }
+  //接下来判断高16位是否为0
+  //对于uint是否为无符号数存疑
+  uint16_t sum_high = sum >> 16;
+  uint16_t sum_low = (sum << 16) >> 16;
+  while(sum_high != 0){
+    sum = sum_high + sum_low;
+    sum_high = sum >> 16;
+    sum_low = (sum << 16) >> 16;
+  }
+  //取反
+  sum_low = ~ sum_low; 
+  return sum_low;
 }
