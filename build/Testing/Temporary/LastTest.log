@@ -1,10 +1,10 @@
-Start testing: May 25 14:06 CST
+Start testing: May 27 01:07 CST
 ----------------------------------------------------------
-4/6 Testing: ip_test
-4/6 Test: ip_test
-Command: "/home/qzh/homework/cnlab/net-lab/build/ip_test" "/home/qzh/homework/cnlab/net-lab/testing/data/ip_test"
+6/6 Testing: icmp_test
+6/6 Test: icmp_test
+Command: "/home/qzh/homework/cnlab/net-lab/build/icmp_test" "/home/qzh/homework/cnlab/net-lab/testing/data/icmp_test"
 Directory: /home/qzh/homework/cnlab/net-lab/build
-"ip_test" start time: May 25 14:06 CST
+"icmp_test" start time: May 27 01:07 CST
 Output:
 ----------------------------------------------------------
 [0;34mTest begin.
@@ -15,18 +15,18 @@ Sample input all processed, checking output
 [0;32mRound 2: no differences
 [0;32mRound 3: no differences
 [0;32mRound 4: no differences
-[0;31mRound 5: differences found(Line 1 of the current round)
+[0;32mRound 5: no differences
 [0;32mRound 6: no differences
-[0;31mRound 7: differences found(Line 1 of the current round)
-[0;31mRound 8: differences found(Line 1 of the current round)
+[0;32mRound 7: no differences
+[0;32mRound 8: no differences
 [0;32mRound 9: no differences
 [0;32mRound 10: no differences
 [0;32mRound 11: no differences
-[0;31mRound 12: differences found(Line 1 of the current round)
+[0;32mRound 12: no differences
 [0;32mRound 13: no differences
 [0;32mRound 14: no differences
-[0;31mRound 15: differences found(Line 1 of the current round)
-[1;31m====> Some log rounds are different to the demo.
+[0;32mRound 15: no differences
+[1;32m====> All log rounds are the same to the demo.
 [0m[0;34mChecking pcap output file(compare with demo).
 [0;32mPacket 1: no differences
 [0;32mPacket 2: no differences
@@ -37,6 +37,10 @@ Sample input all processed, checking output
 [0;32mPacket 7: no differences
 [0;32mPacket 8: no differences
 [0;32mPacket 9: no differences
+[0;32mPacket 10: no differences
+[0;32mPacket 11: no differences
+[0;32mPacket 12: no differences
+[0;32mPacket 13: no differences
 [1;32m====> All packets are the same to the demo.
 [0m[1;33mFor this test, log is only a reference. Your implementation is OK if your pcap file is the same to the demo pcap file.
 [0m
@@ -44,8 +48,8 @@ Sample input all processed, checking output
 Test time =   0.02 sec
 ----------------------------------------------------------
 Test Passed.
-"ip_test" end time: May 25 14:06 CST
-"ip_test" time elapsed: 00:00:00
+"icmp_test" end time: May 27 01:07 CST
+"icmp_test" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: May 25 14:06 CST
+End testing: May 27 01:07 CST

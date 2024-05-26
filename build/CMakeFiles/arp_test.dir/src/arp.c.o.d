@@ -46,4 +46,5 @@ CMakeFiles/arp_test.dir/src/arp.c.o: \
  /home/qzh/homework/cnlab/net-lab/./include/buf.h \
  /home/qzh/homework/cnlab/net-lab/./include/arp.h \
  /home/qzh/homework/cnlab/net-lab/./include/net.h \
- /home/qzh/homework/cnlab/net-lab/./include/ethernet.h
+ /home/qzh/homework/cnlab/net-lab/./include/ethernet.h \
+ /home/qzh/homework/cnlab/net-lab/./include/utils.h
